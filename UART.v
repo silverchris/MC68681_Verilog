@@ -1,42 +1,27 @@
 `timescale 1ns / 1ps
 module UART (
-    cs,
-    rw,
-    data,
-    clk,
-    TX,
-    RX,
-    TxEN,
-    RxEN,
-    TxReset,
-    RxReset,
-    LocalLoop,
-    RemoteLoop,
-    AutoEcho,
-    FFULL,
-    OVER,
-    TxRDY,
-    RxRDY
+    input cs,
+    input rw,
+    input [7:0] data,
+    output [7:0] data_out,
+    input clk,
+    output wire TX,
+    output wire TxRDY,
+
+    input RX,
+    input TxEN,
+    input RxEN,
+    input TxReset,
+    input RxReset,
+    input LocalLoop,
+    input RemoteLoop,
+    input AutoEcho,
+
+    output wire OVER,
+    output wire FFULL,
+    output wire RxRDY
 );
-  input cs;
-  input rw;
-  inout [7:0] data;
-  input clk;
-  output wire TX;
-  output wire TxRDY;
 
-  input RX;
-  input TxEN;
-  input RxEN;
-  input TxReset;
-  input RxReset;
-  input LocalLoop;
-  input RemoteLoop;
-  input AutoEcho;
-
-  output wire OVER;
-  output wire FFULL;
-  output wire RxRDY;
 
 
   wire internal_tx;
@@ -47,7 +32,7 @@ module UART (
   wire [7:0] internal_d_out;
   wire [7:0] fifo_out;
 
-  assign data = (cs == 1 && rw == 1) ? fifo_out : 8'bz;
+  assign data_out = (cs == 1 && rw == 1) ? fifo_out : 8'bz;
 
 
   assign TX = LocalLoop || internal_tx;

@@ -10,7 +10,8 @@ module CTRLA (
     input TxRDYA,
     input TxRDYB,
     output _INT,
-    inout [7:0] DATA
+    input [7:0] DATA,
+    output [7:0] DATA_OUT
 );
   wire w_ISR_CS;
   assign w_ISR_CS = CS & ~A1 & A0;
@@ -26,7 +27,8 @@ module CTRLA (
       .FFULLB(FFULLB),
       .TxRDYB(TxRDYB),
       .INT(_INT),
-      .data(DATA[7:0])
+      .data(DATA[7:0]),
+      .data_out(DATA_OUT)
   );
 
 endmodule

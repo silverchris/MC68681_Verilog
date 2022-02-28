@@ -9,6 +9,11 @@
 #define CMD_NOP 2
 
 uint8_t cmds[][3] = {
+	{CMD_W, 2, 0x50},    
+    {CMD_W, 2, 0x40},
+    {CMD_W, 2, 0x30},
+    {CMD_W, 2, 0x20},
+    {CMD_W, 2, 0x10},                
 	{CMD_W, 0, 0x93},
 	{CMD_W, 0, 0x80},
 	{CMD_W, 2, 0x05},
@@ -24,6 +29,10 @@ int main(int argc, char **argv) {
 
 	long int count = 0;
 
+    for(int i = 0; i < 50; i++){
+        tb->tick();
+    }
+
     for(int cmd_index = 0; cmd_index < sizeof(cmds)/sizeof(cmds[0]); cmd_index++){
         printf("%d, %d\r\n", cmd_index, sizeof(cmds)/sizeof(cmds[0]));
         if(cmds[cmd_index][0] == 0){
@@ -32,7 +41,7 @@ int main(int argc, char **argv) {
         else if(cmds[cmd_index][0] == 1){
             tb->read(cmds[cmd_index][1]);
         }
-        for(int ticks = 0; ticks <=320; ticks++){
+        for(int ticks = 0; ticks <=3; ticks++){
             tb->tick();
         }
 }
@@ -47,12 +56,15 @@ int main(int argc, char **argv) {
             }
             else if(isr & 0x01){
               tb->write(3, send);
+            //   printf("%c\r\n", send);
               send++;
               if(send > 126){
                   send = '!';
               }
             }
         }
-		tb->tick();
+		        for(int ticks = 0; ticks <=20; ticks++){
+            tb->tick();
+        }
 	} exit(EXIT_SUCCESS);
 }

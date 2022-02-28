@@ -3,7 +3,8 @@ module ISR_IMR (
     input clk,
     input cs,
     input rw,
-    inout [7:0] data,
+    input [7:0] data,
+    output [7:0] data_out,
     input FFULLA,
     input TxRDYA,
     input FFULLB,
@@ -14,7 +15,7 @@ module ISR_IMR (
   reg [7:0] ISR = 'b00;
   reg [7:0] state;
 
-  assign data = (cs == 1 && rw == 1) ? ISR : 8'bz;
+  assign data_out = (cs == 1 && rw == 1) ? ISR : 8'bz;
 
   always @(posedge clk) begin
     state  <= ISR;

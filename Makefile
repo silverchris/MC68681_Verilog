@@ -5,7 +5,7 @@
 SHELL = /bin/sh
 FPGA_PKG = sg48
 FPGA_TYPE = up5k
-# PCF = icebreaker.pcf
+PCF = ICE40UP5K-B-ENV.pcf
 
 # included modules
 ADD_SRC = BLOCK.v CTRLA.v UART_RX.v UART_TX.v FIFO.v SR_LATCH.v UART.v SRA_CRA.v MR.v ISR_IMR.v
@@ -16,13 +16,13 @@ MC68681: MC68681.rpt MC68681.bin
 	yosys -ql $(basename $@)-yosys.log -p 'synth_ice40 -top $(basename $@) -json $@' $< $(ADD_SRC)
 
 %.asc: %.json
-	nextpnr-ice40 --ignore-loops --${FPGA_TYPE} --package ${FPGA_PKG} --json $< --asc $@
+	nextpnr-ice40 --ignore-loops --seed 18 --${FPGA_TYPE} --package ${FPGA_PKG} --pcf ${PCF} --pcf-allow-unconstrained --json $< --asc $@
 
 %.rpt: %.asc
 	icetime -d ${FPGA_TYPE} -mtr $@ $<
 
 %.bin: %.asc
-	icepack $< $(subst MC68681,,$@)
+	icepack $< MC68681.bin
 
 all: MC68681
 
@@ -40,5 +40,5 @@ clean:
 # 	netlistsvg -o MC68681.svg MC68681.json
 
 svg:
-	yosys -p "prep -top MC68681 -flatten; write_json MC68681.json" *.v
+	yosys -p "prep -top MC68681 ; write_json MC68681.json" *.v
 	netlistsvg -o MC68681.svg MC68681.json

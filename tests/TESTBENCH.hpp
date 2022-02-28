@@ -10,6 +10,7 @@ template<class MODULE>	class TESTBENCH {
         Verilated::traceEverOn(true);
 		m_core = new MODULE;
 		m_tickcount = 0l;
+		m_core->CS = 1;
 	}
 
 	virtual ~TESTBENCH(void) {
@@ -86,29 +87,49 @@ template<class MODULE>	class TESTBENCH {
     }
 
     virtual void write(uint8_t addr, uint8_t data){
+		tick();
         m_core->R_W = 0;
         m_core->A0 = (addr & 0x1);
         m_core->A1 = ((addr >> 1) & 0x1);
         m_core->A2 = ((addr >> 2) & 0x1);
         m_core->A3 = ((addr >> 3) & 0x1);
-        m_core->_CS = 0;
+        m_core->CS = 0;
         m_core->DATA_IN = data;
         tick();
         tick();
-        m_core->_CS = 1;        
+		        tick();
+		tick();
+		tick();
+		tick();
+		tick();
+		tick();
+		tick();
+		tick();
+        m_core->CS = 1;        
         m_core->DATA_IN = 0x00;   
     }
     virtual char read(uint8_t addr){
+		char rvalue;
+		tick();
         m_core->R_W = 1;
         m_core->A0 = (addr & 0x1);
         m_core->A1 = ((addr >> 1) & 0x1);
         m_core->A2 = ((addr >> 2) & 0x1);
         m_core->A3 = ((addr >> 3) & 0x1);
-		tick();
-        m_core->_CS = 0;
-        tick();
-        m_core->_CS = 1;        
-		return m_core->DATA_OUT;
+        m_core->CS = 0;
+		for(int ticks = 0; ticks < 5; ticks++){
+            tick();
+        }
+		rvalue = m_core->DATA_OUT;
+		for(int ticks = 0; ticks < 5; ticks++){
+            tick();
+        }
+        m_core->CS = 1;       
+		for(int ticks = 0; ticks < 5; ticks++){
+            tick();
+        }
+		m_core->R_W = 0;
+		return rvalue;
     }
 
 	virtual bool	done(void) { return (Verilated::gotFinish()); }

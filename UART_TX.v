@@ -12,7 +12,7 @@
 // (25000000)/(115200) = 217
 `timescale 1ns / 1ps
 module UART_TX #(
-    parameter CLKS_PER_BIT = 32
+    parameter CLKS_PER_BIT = 417
 ) (
     input            i_Rst_L,
     input            i_Clock,

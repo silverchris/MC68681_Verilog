@@ -37,7 +37,7 @@ module FIFO (
 
   always @(posedge clk) begin
     if (cs_state == 0 & rd == 1) begin
-      fCount <= fCount - 1;
+      if (fCount > 0) fCount <= fCount - 1;
       d_out <= mem[rPTR];
       if (rPTR > (3 - 1)) rPTR <= 0;
       else rPTR <= rPTR + 1;

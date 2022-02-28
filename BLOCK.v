@@ -10,7 +10,9 @@ module BLOCK (
     output TX,
     output FFULL,
     output TxRDY,
-    inout [7:0] DATA
+    input [7:0] DATA,
+    output [7:0] DATA_OUT,
+    output wire MASTER_ENABLE
 );
 
   wire MR_CS;
@@ -46,7 +48,9 @@ module BLOCK (
       .TxEN(w_TxEN),
       .TxReset(w_TxReset),
       .data(DATA[7:0]),
-      .RxRDY(w_RxRDY)
+      .data_out(DATA_OUT),
+      .RxRDY(w_RxRDY),
+      .MASTER_ENABLE(MASTER_ENABLE)
   );
   UART uart (
       .AutoEcho(),
@@ -64,12 +68,14 @@ module BLOCK (
       .OVER(w_OVERRUN),
       .TX(TX),
       .TxRDY(TxRDY),
-      .data(DATA[7:0]),
+      .data(DATA),
+      .data_out(DATA_OUT),
       .RxRDY(w_RxRDY)
 
   );
   MR mr (
       .cs(MR_CS),
+      .clk(CLK),
       .MrReset(w_MrReset),
       .rw(R_W),
       .AutoEcho(),
@@ -79,7 +85,8 @@ module BLOCK (
       .RxINTS(),
       .RxRTSC(),
       .TxRTSC(),
-      .data(DATA[7:0])
+      .data(DATA[7:0]),
+      .data_out(DATA_OUT)
   );
 
 endmodule

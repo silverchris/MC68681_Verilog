@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////////////////////////
 `timescale 1ns / 1ps
 module UART_RX #(
-    parameter CLKS_PER_BIT = 32
+    parameter CLKS_PER_BIT = 417
 ) (
     input            i_Rst_L,
     input            i_Clock,
